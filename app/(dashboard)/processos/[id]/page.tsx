@@ -55,19 +55,34 @@ export default function ProcessoPage() {
     if (!arquivos.length) return;
     setCarregando(true);
     setLog([]);
-    addLog(`📤 Enviando ${arquivos.length} fatura(s)...`);
+    addLog(`📤 Processando ${arquivos.length} fatura(s) uma a uma...`);
 
-    const fd = new FormData();
-    arquivos.forEach((f) => fd.append("faturas", f));
+    let sucessos = 0;
 
-    const res = await fetch(`/api/processos/${id}/extrair`, { method: "POST", body: fd });
-    const data = await res.json();
+    for (let i = 0; i < arquivos.length; i++) {
+      const arquivo = arquivos[i];
+      addLog(`⏳ [${i + 1}/${arquivos.length}] Extraindo ${arquivo.name}...`);
 
-    data.resultados?.forEach((r: any) => {
-      addLog(r.sucesso ? `✅ ${r.arquivo} → mês ${r.fatura?.mes_referencia}` : `❌ ${r.arquivo}: ${r.erro}`);
-    });
+      const fd = new FormData();
+      fd.append("faturas", arquivo);
 
-    addLog(`✔ ${data.sucesso}/${data.total} faturas extraídas com sucesso.`);
+      try {
+        const res = await fetch(`/api/processos/${id}/extrair`, { method: "POST", body: fd });
+        const data = await res.json();
+
+        const r = data.resultados?.[0];
+        if (r?.sucesso) {
+          addLog(`✅ ${arquivo.name} → mês ${r.fatura?.mes_referencia}`);
+          sucessos++;
+        } else {
+          addLog(`❌ ${arquivo.name}: ${r?.erro ?? "erro desconhecido"}`);
+        }
+      } catch {
+        addLog(`❌ ${arquivo.name}: falha na requisição`);
+      }
+    }
+
+    addLog(`✔ ${sucessos}/${arquivos.length} faturas extraídas com sucesso.`);
     await carregarProcesso();
     setStep("calculando");
     setCarregando(false);
