@@ -203,8 +203,8 @@ export async function gerarPeticaoInicial(
           linha(),
 
           p(
-            "A Súmula 391 do STJ é expressa: "O ICMS incide sobre o valor da tarifa de energia elétrica " +
-              "correspondente à demanda de potência efetivamente utilizada." Portanto, a parcela de demanda " +
+            "A Súmula 391 do STJ é expressa: \"O ICMS incide sobre o valor da tarifa de energia elétrica " +
+              "correspondente à demanda de potência efetivamente utilizada.\" Portanto, a parcela de demanda " +
               "contratada e não consumida não pode compor a base de cálculo do imposto, sob pena de tributação " +
               "sobre fato gerador inexistente."
           ),
