@@ -68,7 +68,7 @@ export async function POST(
       .toLowerCase()
       .replace(/\s+/g, "_")}_${processoId.substring(0, 8)}.docx`;
 
-    return new NextResponse(buffer, {
+    return new NextResponse(new Uint8Array(buffer), {
       status: 200,
       headers: {
         "Content-Type":
